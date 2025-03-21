@@ -12,7 +12,7 @@ namespace ClinAgenda.src.Core.Entities
         public required string PhoneNumber { get; set; }
         public required string DocumentNumber { get; set; }
         public required int StatusId { get; set; }
-        public required string BirthDateday { get; set; }
+        public required string BirthDate { get; set; }
 
     }
 }
