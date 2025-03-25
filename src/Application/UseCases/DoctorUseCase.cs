@@ -1,15 +1,17 @@
-using ClinAgenda.src.Application.DTOs.Patient;
-using ClinAgenda.src.Application.DTOs.Status;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ClinAgenda.src.Core.Interfaces;
 
 namespace ClinAgenda.src.Application.UseCases
 {
-    public class PatientUseCase
+    public class DoctorUseCase
     {
-        private readonly IPatientRepository _patientRepository;
-        public PatientUseCase(IPatientRepository patientRepository)
+        private readonly IDoctorRepository _doctorRepository;
+        public DoctorUseCase(IDoctorRepository doctorRepository)
         {
-            _patientRepository = patientRepository;
+            _doctorRepository = doctorRepository;
         }
         public async Task<object> GetPatientsAsync(string? name, string? documentNumber, int? statusId, int itemsPerPage, int page)
         {
