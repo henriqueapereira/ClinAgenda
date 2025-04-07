@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClinAgenda.src.Application.DTOs.Status;
-using ClinAgenda.src.Core.Interfaces;
-using Dapper;
-using MySql.Data.MySqlClient;
+using System.Text; // Importa funcionalidades para manipulação de strings, incluindo StringBuilder.
+using ClinAgenda.src.Application.DTOs.Status; // Importa os DTOs relacionados a Status.
+using ClinAgenda.src.Core.Interfaces; // Importa a interface que o repositório implementa.
+using Dapper; // Biblioteca para acesso a banco de dados de forma simplificada.
+using MySql.Data.MySqlClient; // Biblioteca para conexão com MySQL.
 
 namespace ClinAgenda.src.Infrastructure.Repositories
 {
@@ -22,7 +18,7 @@ namespace ClinAgenda.src.Infrastructure.Repositories
         }
 
         // Método assíncrono para buscar um status pelo ID.
-        public async Task<StatusDTO> GetByIdAsync(int id)
+        public async Task<StatusDTO?> GetByIdAsync(int id)
         {
             // Query SQL para selecionar o status pelo ID.
             string query = @"

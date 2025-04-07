@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ClinAgenda.src.Core.Entities
+namespace ClinAgendaAPI
 {
     public class Patient
     {
@@ -12,7 +12,6 @@ namespace ClinAgenda.src.Core.Entities
         public required string PhoneNumber { get; set; }
         public required string DocumentNumber { get; set; }
         public required int StatusId { get; set; }
-        public required string BirthDate { get; set; }
-
+        public required string BirthDate { get; set; }
     }
 }

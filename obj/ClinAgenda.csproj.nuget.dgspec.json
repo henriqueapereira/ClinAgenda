@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\ClinAgenda\\ClinAgenda.csproj": {}
+    "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\BootcampPecege\\ClinAgenda\\ClinAgenda.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\ClinAgenda\\ClinAgenda.csproj": {
+    "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\BootcampPecege\\ClinAgenda\\ClinAgenda.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\ClinAgenda\\ClinAgenda.csproj",
+        "projectUniqueName": "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\BootcampPecege\\ClinAgenda\\ClinAgenda.csproj",
         "projectName": "ClinAgenda",
-        "projectPath": "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\ClinAgenda\\ClinAgenda.csproj",
+        "projectPath": "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\BootcampPecege\\ClinAgenda\\ClinAgenda.csproj",
         "packagesPath": "C:\\Users\\Henrique A Pereira\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\ClinAgenda\\obj\\",
+        "outputPath": "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\BootcampPecege\\ClinAgenda\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

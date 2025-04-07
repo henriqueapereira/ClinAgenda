@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "o2D/QQ0+Cis=",
+  "dgSpecHash": "WVtSndCUCrg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\ClinAgenda\\ClinAgenda.csproj",
+  "projectFilePath": "C:\\Users\\Henrique A Pereira\\Desktop\\dev2\\BootcampPecege\\ClinAgenda\\ClinAgenda.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Henrique A Pereira\\.nuget\\packages\\bouncycastle.cryptography\\2.3.1\\bouncycastle.cryptography.2.3.1.nupkg.sha512",
     "C:\\Users\\Henrique A Pereira\\.nuget\\packages\\dapper\\2.1.66\\dapper.2.1.66.nupkg.sha512",

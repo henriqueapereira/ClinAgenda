@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ClinAgenda.src.Application.DTOs.Status;
 using ClinAgenda.src.Core.Interfaces;
 
-namespace ClinAgenda.src.Application.UseCases
+namespace ClinAgendaAPI.StatusUseCase
 {
     public class StatusUseCase
     {
@@ -42,16 +38,15 @@ namespace ClinAgenda.src.Application.UseCases
         // Método assíncrono que cria um novo status e retorna o ID gerado.
         public async Task<int> CreateStatusAsync(StatusInsertDTO statusDTO)
         {
-            // Cria uma nova instância de StatusInsertDTO com os dados fornecidos.
-            var status = new StatusInsertDTO
-            {
-                Name = statusDTO.Name
-            };
-
             // Chama o repositório para inserir o novo status e obtém o ID gerado.
-            var newStatusId = await _statusRepository.InsertStatusAsync(status);
+            var newStatusId = await _statusRepository.InsertStatusAsync(statusDTO);
 
             return newStatusId; // Retorna o ID do novo status criado.
+        }
+        public async Task<bool> DeleteStatusByIdAsync(int id)
+        {
+            var rowsAffected = await _statusRepository.DeleteStatusAsync(id);
+            return rowsAffected > 0;
         }
     }
 }

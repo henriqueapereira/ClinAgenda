@@ -13,5 +13,6 @@ namespace ClinAgenda.src.Core.Interfaces
         Task<PatientDTO?> GetByIdAsync(int id);
         Task<bool> UpdateAsync(PatientDTO patient);
         Task<int> DeleteByPatientIdAsync(int patientId);
+        Task<IEnumerable<PatientListDTO>> AutoComplete(string name);
     }
 }

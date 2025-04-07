@@ -18,70 +18,111 @@ namespace ClinAgenda.src.Infrastructure.Repositories
         {
             _connection = connection;
         }
-
-        public async Task<DoctorDTO> GetByIdAsync(int id)
+        public async Task<(int total, IEnumerable<DoctorListDTO> doctors)> GetDoctorsAsync(string? name, int? specialtyId, int? statusId, int offset, int itemsPerPage)
         {
-            const string query = @"
-                SELECT 
-                    ID, 
-                    NAME,
-                    STATUSID, 
-                FROM DOCTOR
-                WHERE ID = @Id";
 
-            var doctor = await _connection.QueryFirstOrDefaultAsync<DoctorDTO>(query, new { Id = id });
-
-            return doctor;
-        }
-
-        public async Task<(int total, IEnumerable<DoctorListDTO> doctor)> GetPatientsAsync(string? name, int? statusId, int itemsPerPage, int page)
-        {
-            var queryBase = new StringBuilder(@"     
-                    FROM DOCTOR P
-                    INNER JOIN STATUS S ON S.ID = D.STATUSID
-                    WHERE 1 = 1");
+            var innerJoins = new StringBuilder(@"
+                FROM DOCTOR D
+                INNER JOIN STATUS S ON D.STATUSID = S.ID
+                INNER JOIN DOCTOR_SPECIALTY DSPE ON DSPE.DOCTORID = D.ID
+                WHERE 1 = 1 ");
 
             var parameters = new DynamicParameters();
 
             if (!string.IsNullOrEmpty(name))
             {
-                queryBase.Append(" AND P.NAME LIKE @Name");
+                innerJoins.Append(" AND D.NAME LIKE @Name");
                 parameters.Add("Name", $"%{name}%");
+            }
+
+            if (specialtyId.HasValue)
+            {
+                innerJoins.Append(" AND DSPE.SPECIALTYID = @SpecialtyId");
+                parameters.Add("SpecialtyId", specialtyId.Value);
             }
 
             if (statusId.HasValue)
             {
-                queryBase.Append(" AND S.ID = @StatusId");
+                innerJoins.Append(" AND S.ID = @StatusId");
                 parameters.Add("StatusId", statusId.Value);
             }
 
-            var countQuery = $"SELECT COUNT(DISTINCT D.ID) {queryBase}";
+            var countQuery = $"SELECT COUNT(DISTINCT D.ID) {innerJoins}";
             int total = await _connection.ExecuteScalarAsync<int>(countQuery, parameters);
+            
+            parameters.Add("LIMIT", itemsPerPage);
+            parameters.Add("OFFSET", offset);
 
-            var dataQuery = $@"
-                    SELECT 
-                        D.ID, 
-                        D.NAME,
-                        D.STATUSID AS STATUSID, 
-                        D.NAME AS STATUSNAME
-                    {queryBase}
-                    ORDER BY D.ID
-                    LIMIT @Limit OFFSET @Offset";
+            var query = $@"
+                SELECT DISTINCT
+                    D.ID AS ID,
+                    D.NAME AS NAME,
+                    S.ID AS STATUSID,
+                    S.NAME AS STATUSNAME
+                {innerJoins}
+                ORDER BY D.ID
+                LIMIT @Limit OFFSET @Offset";
 
-            parameters.Add("Limit", itemsPerPage);
-            parameters.Add("Offset", (page - 1) * itemsPerPage);
+                var doctors = await _connection.QueryAsync<DoctorListDTO>(query.ToString(), parameters);
 
-            var doctors = await _connection.QueryAsync<DoctorListDTO>(dataQuery, parameters);
+                return (total, doctors);
+        }
 
-            return (total, doctors);
+        public async Task<IEnumerable<SpecialtyDoctorDTO>> GetDoctorSpecialtiesAsync(int[] doctorIds)
+        {
+            var query = @"
+                SELECT 
+                    DS.DOCTORID AS DOCTORID,
+                    SP.ID AS SPECIALTYID,
+                    SP.NAME AS SPECIALTYNAME,
+                    SP.SCHEDULEDURATION 
+                FROM DOCTOR_SPECIALTY DS
+                INNER JOIN SPECIALTY SP ON DS.SPECIALTYID = SP.ID
+                WHERE DS.DOCTORID IN @DOCTORIDS";
+
+            var parameters = new { DoctorIds = doctorIds };
+
+            return await _connection.QueryAsync<SpecialtyDoctorDTO>(query, parameters);
         }
         public async Task<int> InsertDoctorAsync(DoctorInsertDTO doctor)
         {
             string query = @"
-            INSERT INTO Doctor (name, statusId) 
+            INSERT INTO Doctor (Name, StatusId) 
             VALUES (@Name, @StatusId);
             SELECT LAST_INSERT_ID();";
             return await _connection.ExecuteScalarAsync<int>(query, doctor);
+        }
+        public async Task<IEnumerable<DoctorListDTO>> GetByIdAsync(int id)
+        {
+            var queryBase = new StringBuilder(@"
+                    FROM DOCTOR D
+                LEFT JOIN DOCTOR_SPECIALTY DSPE ON D.ID = DSPE.DOCTORID
+                LEFT JOIN STATUS S ON S.ID = D.STATUSID
+                LEFT JOIN SPECIALTY SP ON SP.ID = DSPE.SPECIALTYID
+                    WHERE 1 = 1");
+
+            var parameters = new DynamicParameters();
+
+            if (id > 0)
+            {
+                queryBase.Append(" AND D.ID = @id");
+                parameters.Add("id", id);
+            }
+
+            var dataQuery = $@"
+        SELECT DISTINCT
+            D.ID, 
+            D.NAME, 
+            D.STATUSID AS STATUSID, 
+            S.NAME AS STATUSNAME,
+            DSPE.SPECIALTYID AS SPECIALTYID,
+            SP.NAME AS SPECIALTYNAME
+        {queryBase}
+        ORDER BY D.ID";
+
+            var doctors = await _connection.QueryAsync<DoctorListDTO>(dataQuery, parameters);
+
+            return doctors;
         }
         public async Task<bool> UpdateAsync(DoctorDTO doctor)
         {
@@ -95,7 +136,7 @@ namespace ClinAgenda.src.Infrastructure.Repositories
         }
         public async Task<int> DeleteByDoctorIdAsync(int id)
         {
-            string query = "DELETE FROM Doctor WHERE ID = @Id";
+            string query = "DELETE FROM DOCTOR WHERE ID = @Id";
 
             var parameters = new { Id = id };
 
@@ -103,5 +144,6 @@ namespace ClinAgenda.src.Infrastructure.Repositories
 
             return rowsAffected;
         }
+
     }
 }

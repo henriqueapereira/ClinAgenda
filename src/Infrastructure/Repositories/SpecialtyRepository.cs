@@ -18,7 +18,7 @@ namespace ClinAgenda.src.Infrastructure.Repositories
         {
             _connection = connection;
         }
-        public async Task<SpecialtyDTO> GetByIdAsync(int id)
+        public async Task<SpecialtyDTO?> GetByIdAsync(int id)
         {
             const string query = @"
                 SELECT 
@@ -32,12 +32,18 @@ namespace ClinAgenda.src.Infrastructure.Repositories
 
             return specialty;
         }
-        public async Task<(int total, IEnumerable<SpecialtyDTO> specialtys)> GetAllAsync(int? itemsPerPage, int? page)
+        public async Task<(int total, IEnumerable<SpecialtyDTO> specialtys)> GetAllAsync(string? name, int? itemsPerPage, int? page)
         {
             var queryBase = new StringBuilder(@"
                 FROM SPECIALTY S WHERE 1 = 1");
 
             var parameters = new DynamicParameters();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                queryBase.Append(" AND S.NAME LIKE @Name");
+                parameters.Add("Name", $"%{name}%");
+            }
 
             var countQuery = $"SELECT COUNT(DISTINCT S.ID) {queryBase}";
             int total = await _connection.ExecuteScalarAsync<int>(countQuery, parameters);
@@ -76,5 +82,20 @@ namespace ClinAgenda.src.Infrastructure.Repositories
 
             return rowsAffected;
         }
+        public async Task<IEnumerable<SpecialtyDTO>> GetSpecialtiesByIds(List<int> specialtiesId)
+        {
+            var query = @"
+                SELECT 
+                    S.ID, 
+                    S.NAME,
+                    S.SCHEDULEDURATION 
+                FROM SPECIALTY S
+                WHERE S.ID IN @SPECIALTIESID";
+
+            var parameters = new { SpecialtiesID = specialtiesId };
+
+            return await _connection.QueryAsync<SpecialtyDTO>(query, parameters);
+        }
     }
+
 }

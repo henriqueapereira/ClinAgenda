@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ClinAgenda.src.Core.Entities
+namespace ClinAgenda
 {
     public class Appointment
     {
@@ -12,7 +7,6 @@ namespace ClinAgenda.src.Core.Entities
         public required int DoctorId { get; set; } 
         public required int SpecialtyId { get; set; } 
         public required DateTime AppointmentDate { get; set; }  
-        public required string Observation { get; set; }   
-
+        public required string Observation { get; set; }   
     }
 }
